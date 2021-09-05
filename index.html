@@ -1,80 +1,166 @@
 <!DOCTYPE html>
-<html>
-  <head>
-	<meta name="generator" content="Hugo 0.68.3" />
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta property="og:title" content="Guillermo D&#39;Angelo | GIS Analyst" />
-
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://guillermodangelo.com/" />
-
-
-
-
-    <base href="https://guillermodangelo.com">
-    <title>Guillermo D&#39;Angelo | GIS Analyst</title>
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,700">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Jura:400,700">
-
-
-
-    <link rel="stylesheet" href="/css/style.c58b0e94470068f94b62b8d1cdd1989d86b2999585e17b24312ec46a109a709b.css">
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <title>Asthma danger map</title>
+  <style>
     
+    #map {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
 
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/manifest.json">
-  </head>
-  <body>
-    <div class="wrap">
-<section class="profile">
-  <div class="portrait">
-    <a href="/">
-      <div class="spinner"></div>
-      <div class="img" style="background-image: url('/images/retrato.jpg')"></div>
-    </a>
-  </div>
-  <h1 class="name">Guillermo <b>D&#39;Angelo</b></h1>
-  <h2 class="title">Geographer &amp; GIS Analyst</h2><span class="bio"><p>I’m a geographer and GIS analyst, working in geographic information-related projects since 2010.</p>
-<p>Currently I&rsquo;m working as a GIS Analyst and Head of the Department of Geography of the Ministry of Social Development in Uruguay, and at the University of the Republic as a Research Assistant and Lecturer.</p>
-<p>I am qualified in SQL, mainly spatially oriented (PostGIS), and proficient in desktop and command line GIS (Arc and QGIS). I have experience in GIS workflows, the integration of desktop GIS with Python, R and Postgres databases.</p>
-<p>These skills are integrated in the management of an enterprise GIS oriented to public social policies.</p>
-<p>I&rsquo;m the head of a team of 15 people, dedicated to GIS, georreferencing, cartography and spatial analysis.</p>
-</span>
-</section>
+    nav {
+    position: fixed;
+    height: 35px;
+    top: 0;
+    right: 0;
+    left: 0;
+    background: #611f53;
+    text-align: center;
+    line-height: 5px;
+    }
 
-<section class="contacts">
-  <a class="contact" href="mailto:dangeloguillermo@gmail.com">
-    <i class="fas fa-envelope" aria-hidden="true"></i>
-  </a>
-  <a class="contact" href="https://github.com/guillermodangelo">
-    <i class="fab fa-github" aria-hidden="true"></i>
-  </a>
-  <a class="contact" href="https://linkedin.com/in/guillermodangelo">
-    <i class="fab fa-linkedin" aria-hidden="true"></i>
-  </a>
-  <a class="contact" href="https://stackoverflow.com/users/4930647">
-    <i class="fab fa-stack-overflow" aria-hidden="true"></i>
-  </a>
-</section>
+    body  {
+    position: fixed;
+    top: 35px;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    vertical-align: top;
+    }
 
+    .legend {
+    line-height: 18px;
+    color: #555;
+    }
 
+    .legend i {
+        width: 18px;
+        height: 18px;
+        float: left;
+        margin-right: 8px;
+        opacity: 0.7;
+    }
 
-    </div>
-<footer class="footer">
-  <p class="copyright">© 2019-2020 Byungjin Park. <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>.</p>
-  <p class="powered-by">Powered by <a href="https://gohugo.io/">Hugo</a> & <a href="https://github.com/posquit0/hugo-awesome-identity">Awesome Identity</a>.</p>
-</footer>
+</style>
+</head>
 
+<body>
+  <nav>
+    <p style="color:white;">Asthma danger map</p>
+  </nav>
+  
+  <div id="map"></div>
 
+</body>
 
-
-  </body>
 </html>
+
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="./data/hexgrid.js"></script>
+
+<script>
+
+  var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+  });
+
+  var CartoDB_Positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 19
+  });
+  
+
+  const extent = [34, -118.22]
+
+	var map = L.map('map', {
+		center: extent,
+		zoom: 11,
+    preferCanvas: true,
+		layers: CartoDB_Positron
+	});
+
+
+  function getColor(d) {
+		return	d === 'HIGHEST' ? '#48194c' :
+            d === 'HIGH'    ? '#8856a7' :
+            d === 'LOWER'   ? '#8c96c6' :
+            d === 'LOWEST'  ? '#b3cde3' :
+                  '#8856a7';
+	}
+
+  
+  function style(feature) {
+    return {
+        fillColor: getColor(feature.properties.danger_level),
+        opacity: 0,
+        fillOpacity: 0.5,
+        opacity: 0.5,
+        weight: 0,
+        color: getColor(feature.properties.danger_level)  //Outline color
+    };
+  }
+
+  var grid = L.geoJson(hexgrid, {
+    onEachFeature: function (feature, layer) {
+    layer.bindPopup(
+      '<b>' + 'Census Tract: ' + '</b>' + feature.properties.census_tract +
+      '<br/><b>' + 'Zip Code: ' + '</b>' + feature.properties.zip + 
+      '<br/><b>' + 'Nearby City: ' + '</b>' + feature.properties.nearby_city + 
+      '<br/><b>' + 'Asthma Danger Level: ' + '</b>' + feature.properties.danger_level + 
+      '<br/><b>' + 'Asthma Danger Score: ' + '</b>' + feature.properties.danger_score 
+    );
+    },
+    style: style,
+  }).addTo(map);
+  
+  var popup = L.popup()
+    .setLatLng(extent)
+    .setContent("Click to display pop-ups")
+    .openOn(map);
+
+      var baseLayers = {
+      "Image": Esri_WorldImagery,
+      "Roads": CartoDB_Positron
+    };
+
+
+  // legend
+  var legend = L.control({position: 'bottomleft'});
+
+  legend.onAdd = function (map) {
+
+      var div = L.DomUtil.create('div', 'info legend'),
+          grades = ['HIGHEST' , 'HIGH', 'LOWER', 'LOWEST'];
+          labels = ['Highest' , 'High', 'Lower', 'Lowest'];
+          title = ['<strong>Asthma Danger</strong><br>'];
+
+      // loop to generate a label with a colored square
+      for (var i = 0; i < grades.length; i++) {
+          title.push('<i style="background:' + getColor(grades[i]) 
+                      + '"></i> ' + labels[i] + '<br>');
+      }
+      div.innerHTML = title.join('');
+      return div;
+  };
+
+  legend.addTo(map);
+
+
+L.control.layers(baseLayers).addTo(map);
+
+
+</script>
+
+
+
