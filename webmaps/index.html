@@ -85,7 +85,7 @@
 
 	var map = L.map('map', {
 		center: extent,
-		zoom: 11,
+		zoom: 10,
     preferCanvas: true,
 		layers: CartoDB_Positron
 	});
@@ -105,7 +105,6 @@
         fillColor: getColor(feature.properties.danger_level),
         opacity: 0,
         fillOpacity: 0.5,
-        opacity: 0.5,
         weight: 0,
         color: getColor(feature.properties.danger_level)  //Outline color
     };
