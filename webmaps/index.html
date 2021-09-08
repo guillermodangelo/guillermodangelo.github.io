@@ -52,7 +52,7 @@
 </html>
 
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.umd.js"></script>
+<script src="https://unpkg.com/leaflet-geosearch@3.0.4/dist/geosearch.umd.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="./data/hexgrid.js"></script>
 
@@ -152,10 +152,12 @@ L.control.layers(baseLayers).addTo(map);
 
 const search = new GeoSearch.GeoSearchControl({
   provider: new GeoSearch.OpenStreetMapProvider(),
+  style: 'bar'
 });
 map.addControl(search);
 
+map.on('geosearch/showlocation', yourEventHandler);
+map.on('geosearch/marker/dragend', yourEventHandler);
+
 </script>
-
-
 
