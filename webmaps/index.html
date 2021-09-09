@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
@@ -20,6 +21,8 @@
     }
 
     .legend {
+  border: 5px solid black;
+    width: 150px;
     text-align: left;
     line-height: 18px;
     color: #555;
@@ -29,20 +32,18 @@
         width: 18px;
         height: 18px;
         float: left;
-        margin-right: 8px;
+        margin-right: 6px;
         opacity: 0.7;
     }
-
 </style>
+<style>body { padding: 0; margin: 0; } #map { height: 100%; width: 100vw; }</style>
 </head>
 
 <body>
   
   <div id="map"></div>
 
-</body>
 
-</html>
 
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-geosearch@3.5.0/dist/geosearch.umd.js"></script>
@@ -145,13 +146,12 @@ L.control.layers(baseLayers).addTo(map);
 
 const search = new GeoSearch.GeoSearchControl({
   provider: new GeoSearch.OpenStreetMapProvider(),
-  style: 'bar'
+  style: 'button'
 });
 map.addControl(search);
 
 </script>
 
 </body>
+
 </html>
-
-
