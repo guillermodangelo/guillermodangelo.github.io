@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	
+	<title>Corelot webmap test</title>
+
+    <style>
+        #map{
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+        left: 0;
+        }
+
+		.info {
+		position: absolute;
+		bottom: 5px;
+		left: 5px;
+		z-index: 999;
+		width: 170px;
+		background-color: hsla(0, 0%, 100%, 0.8);
+		box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+		border-radius: 5px;
+		border: 1px solid grey;
+		padding: 10px;
+		}
+
+		#info h4 {
+		font-family: Arial, Helvetica, sans-serif;
+		border-collapse: collapse;
+		width: 100%;
+		color: '#feb24c';
+		}
+
+    </style>
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+    <script src="./data/sample_data.js"></script>
+
+</head>
+<body>
+
+<div id="map"></div>
+
+<script>
+
+	var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'ESRI'
+	});
+
+	var CartoDB_Positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+		attribution: 'CARTO & OSM'
+	});
+
+    var center_map = [38.2186, -77.5181]
+
+	var map = L.map('map', {
+		center: center_map,
+		zoom: 16,
+		layers: Esri_WorldImagery
+	});
+
+
+	var info = L.control();
+
+	info.onAdd = function (map) {
+		this._div = L.DomUtil.create('div', 'info');
+		this.update();
+		return this._div;
+	};
+
+	info.update = function (props) {
+		this._div.innerHTML = '<h1 style="color:grey;>" <h2> Parcel data </h2>' +  (props ?
+			'<b>Locality: ' + props.LOCALITY + 
+			'</b><br/> Id: ' + props.id + 
+			'</b><br/> FIPS: '  + props.FIPS +  
+			'</b><br/> Parcel ID: '  + props.PARCELID + 
+			'</b><br/> PTM ID: '  + props.PTM_ID + 
+			'</b><br/> Last update: '  + props.LASTUPDATE + 
+			'</b><br/> VGIN QPID: '  + props.VGIN_QPID + ' ' 
+			: 'Click on a parcel to display data');
+	};
+
+	info.addTo(map);
+
+    L.geoJSON(parcels).addTo(map);
+
+
+    var lastClickedLayer;
+
+	function highlightFeature(e) {
+        if(lastClickedLayer){
+            geojson.resetStyle(lastClickedLayer);
+        }
+
+		var layer = e.target;
+
+		layer.setStyle({
+			weight: 4,
+			fillColor: '#feb24c',
+			color: '#f03b20',
+			dashArray: '',
+			fillOpacity: 0.7
+		});
+
+		if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+			layer.bringToFront();
+		}
+
+        lastClickedLayer = layer;
+
+		info.update(layer.feature.properties);
+
+	}
+
+	function onEachFeature(feature, layer) {
+		layer.on({
+			click: highlightFeature
+		});
+	}
+
+	geojson = L.geoJson(parcels, {
+		onEachFeature: onEachFeature
+	}).addTo(map);
+
+
+
+		
+  // base map layers
+  var baseLayers = {
+      "Imagery": Esri_WorldImagery,
+      "Grayscale": CartoDB_Positron,
+    };
+
+	var legend = L.control({position: 'bottomright'});
+
+	L.control.layers(baseLayers).addTo(map);
+
+
+</script>
+
+
+
+</body>
+</html>
