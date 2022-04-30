@@ -6,26 +6,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch@3.5.0/dist/geosearch.css"/>
   <link rel="shortcut icon" href="logos/STR Favicon.png">
   <link rel="stylesheet" href="css/styles.css"/>
+  <link rel="stylesheet" href="css/geosearch.css">
   
-  <title>Miami map V1</title>
+  <title>Miami map V2</title>
 
 </head>
 
 <body>
 
+  <div id="map"></div>
+
   <div class="logoContainer">
-      <div class="column">
-        <img src="logos/Stratton-logo-black.png" alt="Stratton Logo">
-      </div>
-      <div class="column">
-        <img src="logos/AHSF_Logo.png" alt="AIRBnb Logo">
-      </div>
+    <div class="column">
+      <a href="https://truststratton.com/" target="_blank">
+      <img  src="logos/Stratton-logo-black_2.png" alt="Stratton Logo">
+    </a>
+    </div>
+    <div class="column">
+      <a href="https://www.meetup.com/es-ES/Airbnb-Hosts-Miami/" target="_blank">
+      <img src="logos/AHSF_Logo.png" alt="airbnb logo">
+    </a>
+    </div>
+    
   </div>
 
-  <div id="map"></div>
+
+  <div class="textContainer">
+    <span>Add some text, some credits or a link to send your comments or supporting the site.</span>
+  </div>
 
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet-geosearch@3.5.0/dist/geosearch.umd.js"></script>
